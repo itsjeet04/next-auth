@@ -1,6 +1,10 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 
 export default function SignupPage() {
 
@@ -10,7 +14,28 @@ export default function SignupPage() {
         password: "",
     });
 
-    const onSignup = async () => {}
+    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const router = useRouter() ;
+
+    const onSignup = async () => {
+        try {
+            const response = await axios.post("/api/users/signup", user)
+            toast.success("Signup successful")
+            console.log(response.data);
+            router.push("/login") ;
+            
+        } catch (error : any) {
+            toast.error(error.message)  
+        }
+    }
+
+    useEffect(() => {
+        if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0){
+            setButtonDisabled(false) ;
+        }else{
+            setButtonDisabled(true) ;
+        }
+    } , [user])
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-black-20">
@@ -68,9 +93,10 @@ export default function SignupPage() {
                 <Link href="/login">
                     <button
                         onClick={onSignup}
+                        disabled={buttonDisabled}
                         className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                     >
-                        Sign Up
+                        {buttonDisabled ? "Fill all fields" : "Sign Up"}
                     </button>
                 </Link>
 
