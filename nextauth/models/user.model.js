@@ -30,5 +30,5 @@ const userSchema = new mongoose.Schema(
     }
 )
 
-export const User = mongoose.models.users || mongoose.model('User',userSchema) 
+export const User = mongoose.models.User || mongoose.model('User',userSchema)
 // if already exists then use that otherwise create a new one , this check is done in nextjs because of hot reloading in server side

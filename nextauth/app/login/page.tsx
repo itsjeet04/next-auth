@@ -4,6 +4,7 @@ import { User } from "@/models/user.model"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 
 export default  function LoginPage(){
@@ -28,10 +29,19 @@ export default  function LoginPage(){
     try {
         const response = await axios.post('/api/users/login', user);
         toast.success(response.data.message) ;
-        router.push('/profile') 
-    } catch (error) {
-        toast.error('Login failed');
-    }
+        const userId = response.data.id;
+        if (userId) {
+            router.push(`/profile/${userId}`);
+        } else {
+            toast.error('Login succeeded but profile id is missing');
+        }
+    } catch (error: any) {
+    console.log("FULL ERROR:", error); // 👈 add this
+    console.log("RESPONSE:", error.response); // 👈 add this
+    console.log("DATA:", error.response?.data); // 👈 MOST IMPORTANT
+
+    toast.error(error.response?.data?.error || "Login failed");
+}
     }
 
     return(
@@ -77,8 +87,10 @@ export default  function LoginPage(){
                 className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-200"
                 disabled={buttonDisabled}
             >
-                {buttonDisabled ? "Fill all fields" : "Login"}
+            {buttonDisabled ? "Fill all fields" : "Login"}
             </button>
+            <Link href={'/signup'} className="block text-sm text-blue-500 hover:underline mt-2"> Don't have an account? Sign up
+            </Link>
 
         </div>
     </div>
