@@ -31,14 +31,14 @@ export default  function LoginPage(){
         toast.success(response.data.message) ;
         const userId = response.data.id;
         if (userId) {
-            router.push(`/profile/${userId}`);
+            router.push(`/profile`);
         } else {
             toast.error('Login succeeded but profile id is missing');
         }
     } catch (error: any) {
-    console.log("FULL ERROR:", error); // 👈 add this
-    console.log("RESPONSE:", error.response); // 👈 add this
-    console.log("DATA:", error.response?.data); // 👈 MOST IMPORTANT
+    console.log("FULL ERROR:", error); 
+    console.log("RESPONSE:", error.response); 
+    console.log("DATA:", error.response?.data); 
 
     toast.error(error.response?.data?.error || "Login failed");
 }
@@ -89,7 +89,11 @@ export default  function LoginPage(){
             >
             {buttonDisabled ? "Fill all fields" : "Login"}
             </button>
-            <Link href={'/signup'} className="block text-sm text-blue-500 hover:underline mt-2"> Don't have an account? Sign up
+            <Link 
+            href={'/signup'} 
+            className="block text-sm text-gray-400 hover:text-white hover:underline mt-4 text-center transition duration-200"
+            >
+            Don’t have an account? Sign up
             </Link>
 
         </div>
