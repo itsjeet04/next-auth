@@ -2,7 +2,7 @@
 import React, { useEffect } from "react"
 import { User } from "@/models/user.model"
 import axios from "axios"
-import toast from "react-hot-toast"
+import {toast} from "react-toastify"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
