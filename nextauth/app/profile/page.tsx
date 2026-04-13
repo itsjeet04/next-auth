@@ -3,10 +3,13 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import {toast} from "react-toastify";
+import { useState , useEffect } from "react";
+import Link from "next/link"
 
 export default function ProfilePage(){
 
     const router = useRouter();
+    const [data , setData] = useState(null);
 
     const logout = async() => {
         try {
@@ -18,6 +21,22 @@ export default function ProfilePage(){
             toast.error(error.message || "Logout failed");
         }
     }
+
+    const getUserDetails = async() => {
+        try {
+            const res = await axios.get('/api/users/me');
+            console.log(res.data);
+
+            setData(res.data.data.username);
+
+        } catch (error: any) {
+            console.log(error.message);
+            toast.error(error.message || "Failed to fetch user details");
+        }
+    }
+    useEffect(() => {
+        getUserDetails();
+    }, [])
 
     return(
         <div className="flex items-center justify-center min-h-screen bg-black-20">
@@ -32,6 +51,23 @@ export default function ProfilePage(){
                     <p className="text-sm text-gray-400 text-center">
                         Welcome to your account 
                     </p>
+                </div>
+
+                <div className="mt-4 flex flex-col items-center gap-2">
+
+                
+                
+                {data ? (
+                    <Link
+                        href={`/profile/${data}`}
+                        className="text-lg font-medium text-blue-400 hover:underline"
+                    >
+                        @{data}
+                    </Link>
+                ) : (
+                    <p className="text-gray-500 text-sm">user not found</p>
+                )}
+
                 </div>
 
                 <button
