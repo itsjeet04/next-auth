@@ -2,6 +2,7 @@ import {connect} from '@/dbconfig/dbconfig'
 import {User} from '@/models/user.model';
 import { NextResponse , NextRequest} from 'next/server';
 import bcryptjs from 'bcryptjs';
+import { sendEmail } from '@/helper/mailer';
 
 connect()
 
@@ -9,6 +10,13 @@ export async function POST(request : NextRequest) {
     try {
         const reqBody = await request.json()
         const {username, email, password} = reqBody
+
+    if (!email) {
+        return NextResponse.json(
+            { error: "Email is missing from request" },
+            { status: 400 }
+        );
+    }
        
 
         const user = await User.findOne({email});
@@ -26,6 +34,18 @@ export async function POST(request : NextRequest) {
         })
 
         const savedUser = await newUser.save();
+
+        //verification email
+        console.log("Sending email to:", email);
+        try {
+            await sendEmail({
+                email ,
+                emailtype : "VERIFY",
+                userId : savedUser._id,
+            })
+        } catch (error) {
+            console.error("Error sending verification email:", error);
+        }
 
         return NextResponse.json({
             message : "User created successfully",
