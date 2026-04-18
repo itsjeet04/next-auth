@@ -3,9 +3,10 @@ import { sendEmail } from "@/helper/mailer";
 import { connect } from "@/dbconfig/dbconfig";
 import { NextRequest, NextResponse } from "next/server";
 
-connect() ;
+connect();
 
-export async function POST(request : NextRequest){
+export async function POST(request: NextRequest) {
+    await connect();
     try {
         const reqBody = await request.json();
         const {token} = reqBody ;
