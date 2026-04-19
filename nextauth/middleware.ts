@@ -6,23 +6,23 @@ export function middleware(request: NextRequest) {
   const isPublicPath =
     path === "/login" ||
     path === "/signup" ||
-    path === "/verifyemail";
+    path === "/verifyemail" ||
+    path === "/" ||
+    path.startsWith("/api");
+
+  if (isPublicPath) {
+    return NextResponse.next();
+  }
 
   const token = request.cookies.get("token")?.value || "";
 
-  // If logged in → block auth pages
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/profile", request.url));
-  }
-
-  // If not logged in → block protected pages
-  if (!isPublicPath && !token) {
+  if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return NextResponse.next(); // ✅ IMPORTANT
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/profile", "/login", "/signup", "/profile/:path*", "/verifyemail"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
